@@ -3,6 +3,9 @@
 help: ## this help output
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
+db-start: ## start the database
+	docker-compose up -d postgres
+
 docker-build: ## build the docker image
 	docker-compose build --force-rm api
 
@@ -20,3 +23,6 @@ go-run: ## run the go app
 
 go-test: ## execute tests
 	go test ./cmd/api/... -cover
+
+swag-init: ## generate swagger docs
+	swag init --dir ./cmd/api --output ./cmd/api/docs --parseDependency --parseInternal

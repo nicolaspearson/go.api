@@ -14,7 +14,7 @@ import (
 // @Summary Retrieves the user identified by the provided ID
 // @Produce json
 // @Param id path integer true "User ID"
-// @Success 200 {object} models.User
+// @Success 200 {object} db.User
 // @Router /users/{id} [get]
 // @Security ApiKeyAuth
 func GetById(c *gin.Context) {
