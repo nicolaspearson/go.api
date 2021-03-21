@@ -20,11 +20,19 @@ func Setup() *gorm.DB {
 		config.Vars.DbName,
 		config.Vars.DbPassword,
 	)
+
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 	log.Println("Database connection successfully established")
-	database.AutoMigrate(&models.User{})
+
+	RunMigrations(database)
+
 	return database
+}
+
+func RunMigrations(database *gorm.DB) bool {
+	database.AutoMigrate(&models.User{})
+	return true
 }

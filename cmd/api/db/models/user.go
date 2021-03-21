@@ -3,8 +3,8 @@ package db
 type User struct {
 	Model
 	Email     string `gorm:"column:email;index" json:"email"`
-	Enabled   bool   `gorm:"column:first_name" json:"enabled"`
-	FirstName string `gorm:"column:first_name" json:"first_name"`
-	LastName  string `gorm:"column:last_name" json:"last_name"`
+	Enabled   bool   `gorm:"column:enabled" json:"enabled"`
+	FirstName string `gorm:"column:firstName" json:"firstName"`
+	LastName  string `gorm:"column:lastName" json:"lastName"`
 	Password  string `gorm:"column:password" json:"password"`
 }

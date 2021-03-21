@@ -3,12 +3,14 @@ module github.com/nicolaspearson/go.api
 go 1.16
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gin-gonic/gin v1.6.3 // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
+	github.com/go-test/deep v1.0.7 // indirect
 	github.com/golang/protobuf v1.5.1 // indirect
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jinzhu/now v1.1.2 // indirect

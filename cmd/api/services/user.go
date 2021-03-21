@@ -2,22 +2,19 @@ package services
 
 import (
 	models "github.com/nicolaspearson/go.api/cmd/api/db/models"
+	repositories "github.com/nicolaspearson/go.api/cmd/api/db/repositories"
 )
 
-type userDAO interface {
-	GetById(id uint) (*models.User, error)
-}
-
 type UserService struct {
-	dao userDAO
+	repository repositories.UserRepository
 }
 
-// NewUserService creates a new UserService with the given user DAO.
-func NewUserService(dao userDAO) *UserService {
-	return &UserService{dao}
+// NewUserService creates a new UserService with the provided user repository.
+func NewUserService(repository repositories.UserRepository) *UserService {
+	return &UserService{repository}
 }
 
-// Get just retrieves user using User DAO, here can be additional logic for processing data retrieved by DAOs
+// GetById retrieves the user by id using the user repository.
 func (s *UserService) GetById(id uint) (*models.User, error) {
-	return s.dao.GetById(id)
+	return s.repository.GetById(id)
 }
