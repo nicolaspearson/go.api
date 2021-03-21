@@ -1,0 +1,22 @@
+@baseUrl = http://localhost:3000/api/v1
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE1MjM5NTY4LCJleHAiOjE2MTUyNDMxNjh9.Go5JxobKVh7RK1VnqENZLrwS8odIRURrMOzlRqO39JI
+
+########################################################################
+###########                       USER                       ###########
+########################################################################
+
+### Get user by id
+GET {{baseUrl}}/users/1 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Login
+POST {{baseUrl}}/user/login HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "msmith@fixture.example.com",
+  "password": "secret"
+}

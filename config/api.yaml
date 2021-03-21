@@ -1,3 +1,10 @@
+dbName: api
+dbUser: master
+dbPassword: secret
+dbHost: localhost
+dbPort: 5432
 environment: development
 releaseVersion: unknown
+serverHost: localhost
+serverPort: 3000
 version: unknown

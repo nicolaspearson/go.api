@@ -12,6 +12,11 @@ services:
     container_name: api
     image: api:1.0
     environment:
+      - API_DB_NAME=api
+      - API_DB_USER=master
+      - API_DB_PASSWORD=secret
+      - API_DB_HOST=postgres
+      - API_DB_PORT=5432
       - API_ENVIRONMENT=docker
       - API_RELEASE_VERSION=1.0
       - API_VERSION=unavailable
@@ -19,3 +24,18 @@ services:
       - 3000
     networks:
       - local
+
+  postgres:
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=api
+      - POSTGRES_USER=master
+      - POSTGRES_PASSWORD=secret
+    expose:
+      - 5432
+    hostname: postgres
+    image: postgres:13
+    networks:
+      - local
+    ports:
+      - 5432:5432
