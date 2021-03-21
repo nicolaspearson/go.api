@@ -1,0 +1,21 @@
+version: "3.8"
+
+networks:
+  local:
+    driver: bridge
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    image: api:1.0
+    environment:
+      - API_ENVIRONMENT=docker
+      - API_RELEASE_VERSION=1.0
+      - API_VERSION=unavailable
+    expose:
+      - 3000
+    networks:
+      - local

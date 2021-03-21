@@ -1,0 +1,17 @@
+
+# Directories
+.git
+.github
+.vscode
+build
+tmp
+
+# Files
+*_test.go
+.dockerignore
+.editorconfig
+.env.example
+.gitignore
+docker-compose.yaml
+Makefile
+README.md
