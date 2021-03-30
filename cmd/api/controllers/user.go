@@ -9,16 +9,16 @@ import (
 	services "github.com/nicolaspearson/go.api/cmd/api/services"
 )
 
-type userController struct {
-	userService services.UserService
+type UserController struct {
+	userService services.IUserService
 }
 
-type UserController interface {
+type IUserController interface {
 	GetById(c *gin.Context)
 }
 
-func NewUserController(s services.UserService) UserController {
-	return &userController{
+func NewUserController(s services.IUserService) IUserController {
+	return &UserController{
 		userService: s,
 	}
 }
@@ -29,7 +29,7 @@ func NewUserController(s services.UserService) UserController {
 // @Param id path integer true "User ID"
 // @Success 200 {object} db.User
 // @Router /users/{id} [get]
-func (c *userController) GetById(context *gin.Context) {
+func (c *UserController) GetById(context *gin.Context) {
 	id, _ := strconv.ParseUint(context.Param("id"), 10, 32)
 	if user, err := c.userService.GetById(uint(id)); err != nil {
 		context.AbortWithStatus(http.StatusNotFound)

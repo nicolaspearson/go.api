@@ -19,7 +19,7 @@ type Suite struct {
 	DB   *gorm.DB
 	mock sqlmock.Sqlmock
 
-	repository UserRepository
+	repository IUserRepository
 	user       *models.User
 }
 

@@ -5,20 +5,20 @@ import (
 	repositories "github.com/nicolaspearson/go.api/cmd/api/db/repositories"
 )
 
-type userService struct {
-	userRepository repositories.UserRepository
+type UserService struct {
+	userRepository repositories.IUserRepository
 }
 
-type UserService interface {
+type IUserService interface {
 	GetById(id uint) (*models.User, error)
 }
 
 // NewUserService creates a new UserService with the provided user repository.
-func NewUserService(r repositories.UserRepository) UserService {
-	return &userService{userRepository: r}
+func NewUserService(r repositories.IUserRepository) IUserService {
+	return &UserService{userRepository: r}
 }
 
 // GetById retrieves the user by id using the user repository.
-func (s *userService) GetById(id uint) (*models.User, error) {
+func (s *UserService) GetById(id uint) (*models.User, error) {
 	return s.userRepository.GetById(id)
 }
