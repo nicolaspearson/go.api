@@ -6,10 +6,22 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nicolaspearson/go.api/cmd/api/config"
-	repositories "github.com/nicolaspearson/go.api/cmd/api/db/repositories"
-	"github.com/nicolaspearson/go.api/cmd/api/services"
+	services "github.com/nicolaspearson/go.api/cmd/api/services"
 )
+
+type userController struct {
+	userService services.UserService
+}
+
+type UserController interface {
+	GetById(c *gin.Context)
+}
+
+func NewUserController(s services.UserService) UserController {
+	return &userController{
+		userService: s,
+	}
+}
 
 // GetUser godoc
 // @Summary Retrieves the user identified by the provided ID
@@ -17,14 +29,12 @@ import (
 // @Param id path integer true "User ID"
 // @Success 200 {object} db.User
 // @Router /users/{id} [get]
-func GetById(c *gin.Context) {
-	r := repositories.NewUserRepository(config.Config.Database)
-	s := services.NewUserService(r)
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
-	if user, err := s.GetById(uint(id)); err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+func (c *userController) GetById(context *gin.Context) {
+	id, _ := strconv.ParseUint(context.Param("id"), 10, 32)
+	if user, err := c.userService.GetById(uint(id)); err != nil {
+		context.AbortWithStatus(http.StatusNotFound)
 		log.Println(err)
 	} else {
-		c.JSON(http.StatusOK, user)
+		context.JSON(http.StatusOK, user)
 	}
 }

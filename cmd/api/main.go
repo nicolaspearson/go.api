@@ -6,11 +6,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nicolaspearson/go.api/cmd/api/config"
-	"github.com/nicolaspearson/go.api/cmd/api/controllers"
+	controllers "github.com/nicolaspearson/go.api/cmd/api/controllers"
 	"github.com/nicolaspearson/go.api/cmd/api/db"
+	repositories "github.com/nicolaspearson/go.api/cmd/api/db/repositories"
 	_ "github.com/nicolaspearson/go.api/cmd/api/docs"
+	services "github.com/nicolaspearson/go.api/cmd/api/services"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/gorm"
 )
 
 // @title Golang Starter API
@@ -33,26 +36,33 @@ func main() {
 	log.Printf("ReleaseVersion: %s", config.Vars.ReleaseVersion)
 	log.Printf("Version: %s", config.Vars.Version)
 
-	// Creates a router without any middleware by default
-	r := gin.New()
-	// Logger middleware will write the logs to gin.DefaultWriter even if you set GIN_MODE=release.
-	r.Use(gin.Logger())
-	// Recovery middleware recovers from any panics and returns a 500 if there was one.
-	r.Use(gin.Recovery())
+	// Set gin to release mode
+	gin.SetMode(gin.ReleaseMode)
 
-	url := ginSwagger.URL(fmt.Sprintf("http://%s:%s/swagger/doc.json", config.Vars.ServerHost, config.Vars.ServerPort))
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
-	v1 := r.Group("/api/v1")
-	{
-		v1.GET("/users/:id", controllers.GetById)
-	}
+	// Creates a router with logger and recovery middleware attached
+	r := gin.Default()
 
-	config.Config.Database = db.Setup()
-	sqlDatabase, err := config.Config.Database.DB()
+	d := db.Setup()
+	sqlDatabase, err := d.DB()
 	if err != nil {
 		log.Fatalf("Failed to retrieve generic database object: %v", err)
 	}
 	defer sqlDatabase.Close()
 
+	initializeRoutes(r, d)
+
 	r.Run(fmt.Sprintf("%s:%s", config.Vars.ServerHost, config.Vars.ServerPort))
+}
+
+func initializeRoutes(r *gin.Engine, d *gorm.DB) {
+	userRepository := repositories.NewUserRepository(d)
+	userService := services.NewUserService(userRepository)
+	userController := controllers.NewUserController(userService)
+
+	url := ginSwagger.URL(fmt.Sprintf("http://%s:%s/swagger/doc.json", config.Vars.ServerHost, config.Vars.ServerPort))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	v1 := r.Group("/api/v1")
+	{
+		v1.GET("/users/:id", userController.GetById)
+	}
 }

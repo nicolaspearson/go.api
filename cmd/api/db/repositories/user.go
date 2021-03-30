@@ -5,26 +5,24 @@ import (
 	"gorm.io/gorm"
 )
 
+type userRepository struct {
+	database *gorm.DB
+}
+
 type UserRepository interface {
 	GetById(id uint) (*models.User, error)
 }
 
-type repo struct {
-	Database *gorm.DB
-}
-
-func NewUserRepository(database *gorm.DB) *repo {
-	return &repo{
-		Database: database,
+func NewUserRepository(d *gorm.DB) UserRepository {
+	return &userRepository{
+		database: d,
 	}
 }
 
-func (r *repo) GetById(id uint) (*models.User, error) {
+func (r *userRepository) GetById(id uint) (*models.User, error) {
 	var user models.User
-
-	err := r.Database.Where("id = ?", id).
+	err := r.database.Where("id = ?", id).
 		First(&user).
 		Error
-
 	return &user, err
 }

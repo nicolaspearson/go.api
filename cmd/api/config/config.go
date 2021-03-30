@@ -4,15 +4,7 @@ import (
 	"log"
 
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
 )
-
-// Config is a global object that holds all runtime variables.
-var Config config
-
-type config struct {
-	Database *gorm.DB
-}
 
 // Vars is a global object that holds all configuration / environment variables.
 var Vars vars
