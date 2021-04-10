@@ -1,0 +1,110 @@
+basePath: /
+definitions:
+  userservice.UserCreateRequestDto:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+    type: object
+  userservice.UserDto:
+    properties:
+      email:
+        type: string
+      enabled:
+        type: boolean
+      firstName:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+      uuid:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: nic.s.pearson@gmail.com
+    name: API Support
+  description: Swagger API documentation for the User API.
+  license:
+    name: MIT
+    url: https://github.com/nicolaspearson/go.api/blob/master/LICENSE
+  termsOfService: http://swagger.io/terms/
+  title: User API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: Redirects to the Swagger UI
+      produces:
+      - application/json
+      responses:
+        "308":
+          description: Redirect
+          schema:
+            type: string
+      summary: Redirects to the Swagger UI
+      tags:
+      - IndexController
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all users from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/userservice.UserDto'
+            type: array
+      summary: Get all users
+      tags:
+      - UserController
+    post:
+      consumes:
+      - application/json
+      description: Saves a new user to the database
+      parameters:
+      - description: Create a user
+        in: body
+        name: UserCreateRequestDto
+        required: true
+        schema:
+          $ref: '#/definitions/userservice.UserCreateRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+          schema:
+            type: string
+      summary: Create a user
+      tags:
+      - UserController
+  /api/users/{uuid}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the user identified by the provided UUID from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/userservice.UserDto'
+      summary: Get user by uuid
+      tags:
+      - UserController
+swagger: "2.0"

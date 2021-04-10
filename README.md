@@ -18,7 +18,7 @@ The starter project includes the following out of the box:
 
 Run the application:
 ```bash
-make db-start
+make persistence-start
 make go-run
 ```
 
@@ -58,7 +58,7 @@ Regenerate Swagger docs:
 make swag-init
 ```
 
-Start the API, Swagger docs are served at: http://localhost:3000/swagger/index.html
+Start the API, Swagger docs are served at: http://localhost:3000
 
 ## Contribution Guidelines
 

@@ -1,4 +1,4 @@
-package db
+package app
 
 import (
 	"database/sql"
@@ -14,7 +14,7 @@ import (
 
 type Suite struct {
 	suite.Suite
-	DB   *gorm.DB
+	db   *gorm.DB
 	mock sqlmock.Sqlmock
 }
 
@@ -27,7 +27,7 @@ func (s *Suite) SetupSuite() {
 	database, s.mock, err = sqlmock.New()
 	require.NoError(s.T(), err)
 
-	s.DB, err = gorm.Open(postgres.New(postgres.Config{
+	s.db, err = gorm.Open(postgres.New(postgres.Config{
 		Conn: database,
 	}), &gorm.Config{})
 
@@ -38,10 +38,11 @@ func (s *Suite) AfterTest(_, _ string) {
 	require.NoError(s.T(), s.mock.ExpectationsWereMet())
 }
 
-func TestInit(t *testing.T) {
+func Test_Init(t *testing.T) {
 	suite.Run(t, new(Suite))
 }
 
-func (s *Suite) TestRunMigrations() {
-	assert.Equal(s.T(), RunMigrations(s.DB), true)
+func (s *Suite) Test_RunMigrations() {
+	application := New()
+	assert.Equal(s.T(), application.RunMigrations(), true)
 }

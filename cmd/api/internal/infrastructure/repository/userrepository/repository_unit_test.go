@@ -1,4 +1,4 @@
-package db
+package userrepository
 
 import (
 	"database/sql"
@@ -7,7 +7,8 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/go-test/deep"
-	models "github.com/nicolaspearson/go.api/cmd/api/db/models"
+	"github.com/google/uuid"
+	"github.com/nicolaspearson/go.api/cmd/api/internal/domain/userentity"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/postgres"
@@ -20,7 +21,7 @@ type Suite struct {
 	mock sqlmock.Sqlmock
 
 	repository IUserRepository
-	user       *models.User
+	user       *userentity.Entity
 }
 
 func (s *Suite) SetupSuite() {
@@ -38,7 +39,7 @@ func (s *Suite) SetupSuite() {
 
 	require.NoError(s.T(), err)
 
-	s.repository = NewUserRepository(s.DB)
+	s.repository = New(s.DB)
 
 	var (
 		email     = "john.doe@example.com"
@@ -47,7 +48,7 @@ func (s *Suite) SetupSuite() {
 		lastName  = "Doe"
 		password  = "secret"
 	)
-	s.user = &models.User{Email: email, Enabled: enabled, FirstName: firstName, LastName: lastName, Password: password}
+	s.user = &userentity.Entity{Email: email, Enabled: enabled, FirstName: firstName, LastName: lastName, Password: password}
 }
 
 func (s *Suite) AfterTest(_, _ string) {
@@ -58,17 +59,17 @@ func TestInit(t *testing.T) {
 	suite.Run(t, new(Suite))
 }
 
-func (s *Suite) TestGetById() {
-	var id uint = 0
-	rows := sqlmock.NewRows([]string{"email", "enabled", "firstName", "lastName", "password"}).
-		AddRow(s.user.Email, s.user.Enabled, s.user.FirstName, s.user.LastName, s.user.Password)
+func (s *Suite) TestGetByUuId() {
+	uuid := uuid.New()
+	rows := sqlmock.NewRows([]string{"uuid", "email", "enabled", "firstName", "lastName", "password"}).
+		AddRow(uuid, s.user.Email, s.user.Enabled, s.user.FirstName, s.user.LastName, s.user.Password)
 
 	s.mock.
 		ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE id = $1 AND "users"."deletedAt" IS NULL ORDER BY "users"."id" LIMIT 1`)).
-		WithArgs(id).
+		WithArgs(uuid).
 		WillReturnRows(rows)
 
-	res, err := s.repository.GetById(id)
+	res, err := s.repository.GetByUuid(uuid)
 	require.NoError(s.T(), err)
 	require.Nil(s.T(), deep.Equal(s.user, res))
 }

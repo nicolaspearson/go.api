@@ -1,7 +1,8 @@
-version: "3.8"
+version: "3.9"
 
 networks:
   local:
+    name: api-local-network
     driver: bridge
 
 services:
@@ -18,12 +19,24 @@ services:
       - API_DB_HOST=postgres
       - API_DB_PORT=5432
       - API_ENVIRONMENT=docker
+      - API_RABBIT_MQ_USERNAME=guest
+      - API_RABBIT_MQ_PASSWORD=secret
+      - API_RABBIT_MQ_HOST=rabbitmq
       - API_RELEASE_VERSION=1.0
+      - API_SERVER_HOST=0.0.0.0
+      - API_SERVER_PORT=3000
       - API_VERSION=unavailable
     expose:
       - 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - local
+    ports:
+      - 3000:3000
 
   postgres:
     container_name: postgres
@@ -33,9 +46,35 @@ services:
       - POSTGRES_PASSWORD=secret
     expose:
       - 5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U master -d api"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
     hostname: postgres
     image: postgres:13
     networks:
       - local
     ports:
       - 5432:5432
+
+  rabbitmq:
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=secret
+    expose:
+      - 5672
+      - 15672
+    healthcheck:
+        test: rabbitmq-diagnostics -q ping
+        interval: 10s
+        timeout: 5s
+        retries: 6
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    networks:
+      - local
+    ports:
+      - 5672:5672
+      - 15672:15672

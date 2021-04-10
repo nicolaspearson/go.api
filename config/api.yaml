@@ -4,6 +4,10 @@ dbPassword: secret
 dbHost: localhost
 dbPort: 5432
 environment: development
+rabbitMqUsername: guest
+rabbitMqPassword: secret
+rabbitMqHost: localhost
+rabbitMqVirtualHost: ""
 releaseVersion: unknown
 serverHost: localhost
 serverPort: 3000

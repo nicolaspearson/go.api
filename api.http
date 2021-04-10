@@ -1,18 +1,36 @@
-@baseUrl = http://localhost:3000/api/v1
+@baseUrl = http://0.0.0.0:3000/api
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE1MjM5NTY4LCJleHAiOjE2MTUyNDMxNjh9.Go5JxobKVh7RK1VnqENZLrwS8odIRURrMOzlRqO39JI
 
 ########################################################################
 ###########                       USER                       ###########
 ########################################################################
 
-### Get user by id
-GET {{baseUrl}}/users/1 HTTP/1.1
+### Register user
+POST {{baseUrl}}/users HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "msmith@fixture.example.com",
+  "firstName": "Morty",
+  "lastName": "Smith",
+  "password": "secret"
+}
+
+### Get all users
+GET {{baseUrl}}/users HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get user by uuid
+GET {{baseUrl}}/users/6f25ca3f-279f-4f7e-8d6e-786892b683a5 HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### Login
-POST {{baseUrl}}/user/login HTTP/1.1
+POST {{baseUrl}}/users/login HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 
